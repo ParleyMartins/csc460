@@ -4,7 +4,14 @@ import os
 words = {'sex': 0, 'watch': 0, 'viagra': 0, 'free': 0,
     'money': 0, 'single': 0, 'love': 0, 'women': 0,
     'looking': 0, 'investment': 0, 'fast': 0,
-    'cash': 0}
+    'cash': 0, 'ad': 0, 'boss':0, 'score': 0,
+    'order': 0, 'buy': 0, 'income':0, 'price': 0,
+    'employment': 0, 'bargain': 0, 'cost': 0, 'save': 0,
+    'profit': 0, 'friend': 0, 'hello': 0, 'dear': 0,
+    'click': 0, 'unsubscribe': 0, 'marketing': 0,
+    'notspam': 0, 'satisfied': 0, 'giving': 0,
+    'win': 0, 'won': 0, 'winner': 0, 'winning': 0,
+    'rolex': 0, 'rolex': 0}
 
 
 def write_attributes_description():
