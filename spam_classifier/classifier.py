@@ -9,6 +9,7 @@ words = {'sex': 0, 'watch': 0, 'viagra': 0, 'free': 0,
 
 def write_attributes_description():
 	with open('training.arff', 'w') as arff:
+		arff.write("@relation DATA=spam-filter\n\n")
 		for word in words.keys():
 			arff.write("@attribute {} numeric\n".format(word))
 		arff.write("@attribute class {0, 1}\n")
