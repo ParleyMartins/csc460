@@ -14,23 +14,23 @@ words = {'sex': 0, 'watch': 0, 'viagra': 0, 'free': 0,
     'rolex': 0, 'rolex': 0}
 
 
-def write_attributes_description():
-    with open('training.arff', 'w') as arff:
+def write_attributes_description(filename = 'training'):
+    with open(filename + '.arff', 'w') as arff:
         arff.write("@relation DATA=spam-filter\n\n")
         for word in words.keys():
             arff.write("@attribute {} numeric\n".format(word))
         arff.write("@attribute class {0, 1}\n")
         arff.write("\n@data\n")
 
-def write_attributes_values(label):
-    with open('training.arff', 'a') as arff:
+def write_attributes_values(label, filename='training'):
+    with open(filename + '.arff', 'a') as arff:
         for word, value in words.items():
             arff.write("{},".format(value))
             words[word] = 0
         arff.write("{}\n".format(label))
 
 
-def read_file(file_address = 'TRAIN_00000.eml', label = 0):
+def read_file(file_address = 'TRAIN_00000.eml', label = 1, mode = 'training'):
     with codecs.open(file_address, encoding='quopri') as f:
         line = f.read()
         for word in line.split():
@@ -40,10 +40,10 @@ def read_file(file_address = 'TRAIN_00000.eml', label = 0):
                 words[word] += 1
             except:
                 pass
-        write_attributes_values(label)
+        write_attributes_values(label, mode)
 
-def read_folder(folder = 'spam/TRAINING/', training = True):
-    if training:
+def read_folder(folder = 'spam/TRAINING/', mode = 'training'):
+    if mode == 'training':
         file_label = {}
         with open('spam/SPAMTrain.label', 'r') as labels:
             for line  in labels:
@@ -54,7 +54,7 @@ def read_folder(folder = 'spam/TRAINING/', training = True):
     else:
         files = os.listdir(folder)
         for f in files:
-            read_file(folder + f)
+            read_file(folder + f, mode = mode)
 
-write_attributes_description()
-read_folder()
+write_attributes_description('testing')
+read_folder('spam/TESTING/', 'testing')
