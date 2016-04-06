@@ -15,16 +15,16 @@ def read_digits_from(file_name = 'teste'):
 
 def generate_noise(distribution):
     noise_values = []
-    for position in range(0, len(distribution)):
-        distribution = round(distribution[position] * IMAGE_SIZE)
-        for i in range(distribution):
+    for position in range(len(distribution)):
+        amount = round(distribution[position] * IMAGE_SIZE)
+        for i in range(amount):
             noise_values.append(noise_domain[position])
     return noise_values
 
 def calc_prob_oij(pixel, noise, obs_pixel):
     raw = pixel + noise
-    if (obs_pixel == raw) or
-        (obs_pixel == 1 and raw < 1) or
+    if (obs_pixel == raw) or \
+        (obs_pixel == 1 and raw < 1) or \
         (obs_pixel == 4 and raw > 4):
         return 1
     else:
@@ -48,22 +48,24 @@ def simplerec(obs, digits, noise):
     noise_values = generate_noise(noise)
     for key in digits.keys():
         prob_d = 1/10 # uniform distribution for the keys
+        product = 1
         for position in range(IMAGE_SIZE):
-            prob_oij = calc_prob_oij(digits[keys][position], noise[position], obs[position])
+            prob_nj = 0
+            prob_oij = calc_prob_oij(digits[key][position], 
+                noise_values[position], obs[position])
             for prob_noise in noise:
-                prob_noise +
-            prob_d *= prob_oij
-    for i
-    # if d ij + n ij = o ij
-# or o ij = 1 and d ij + n ij < 1
-# or o ij = 4 and d ij + n ij > 4
+                prob_nj += prob_noise*prob_oij
+            product *= prob_nj
+        probs[key] = prob_d * product
+    print(probs)
     return probs
 
 def main():
     read_digits_from('assignments/asg/code/digits/digits.csv')
     # random.seed()
-    simplegen(digits, [0.0025, 0.0125, 0.0350, 0.9000, 0.0350, 0.0125, 0.0025])
-    # print()
+    noise = [0.0025, 0.0125, 0.0350, 0.9000, 0.0350, 0.0125, 0.0025]
+    obs = simplegen(digits, noise)
+    simplerec(obs, digits, noise)
 
 
 
