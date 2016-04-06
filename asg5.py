@@ -4,6 +4,8 @@ import random
 digits = {i:[] for i in range(0,10)}
 IMAGE_SIZE = 64
 noise_domain = [i for i in range(-3, 4)]
+htrans_domain = [0, 1, 2]
+vtrans_domain = [-1, 0, 1]
 
 def read_digits_from(file_name = 'teste'):
     line = None
@@ -13,13 +15,14 @@ def read_digits_from(file_name = 'teste'):
             for index, value in row.items():
                 digits[int(index)].append(int(value))
 
-def generate_noise(distribution):
-    noise_values = []
+def generate_values_for(type_of_domain, distribution):
+    values = []
     for position in range(len(distribution)):
         amount = round(distribution[position] * IMAGE_SIZE)
         for i in range(amount):
-            noise_values.append(noise_domain[position])
-    return noise_values
+            values.append(globals()[type_of_domain][position])
+    return values #make this random!
+
 
 def calc_prob_oij(pixel, noise, obs_pixel):
     raw = pixel + noise
@@ -32,7 +35,7 @@ def calc_prob_oij(pixel, noise, obs_pixel):
 
 
 def simplegen(digits, noise):
-    raw_pixels = generate_noise(noise)
+    raw_pixels = generate_values_for('noise_domain', noise)
     random.seed()
     choice = random.randint(0, 9)
     for i in range(IMAGE_SIZE):
@@ -46,7 +49,7 @@ def simplegen(digits, noise):
 def simplerec(obs, digits, noise):
     probs = {}
     sum_probs = 0
-    noise_values = generate_noise(noise)
+    noise_values = generate_values_for('noise_domain', noise)
     for key in digits.keys():
         prob_d = 1/10 # uniform distribution for the keys
         product = 1.0
@@ -63,6 +66,11 @@ def simplerec(obs, digits, noise):
     for i in range(len(probs)):
         probs[i] = probs[i]/sum_probs
     return probs
+
+def transformgen(digits, noise, htrans, vtrans):
+    htrans_values = generate_values_for('htrans_domain', htrans)
+    vtrans_values = generate_values_for('vtrans_domain', vtrans)
+    pass
 
 def main():
     read_digits_from('assignments/asg/code/digits/digits.csv')
