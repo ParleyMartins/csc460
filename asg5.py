@@ -27,17 +27,18 @@ def generate_values_for(type_of_domain, distribution):
 def calc_prob_oij(pixel, noise, obs_pixel):
     raw = pixel + noise
     if (obs_pixel == raw) or \
-        (obs_pixel == 1 and raw < 1) or \
-        (obs_pixel == 4 and raw > 4):
+            (obs_pixel == 1 and raw < 1) or \
+            (obs_pixel == 4 and raw > 4):
         return 1.0
     else:
         return 0.0
 
 
-def simplegen(digits, noise):
+def simplegen(digits, noise, choice = -1):
     raw_pixels = generate_values_for('noise_domain', noise)
-    random.seed()
-    choice = random.randint(0, 9)
+    if choice < 0:
+        random.seed()
+        choice = random.randint(0, 9)
     for i in range(IMAGE_SIZE):
         raw_pixels[i] += digits[choice][i]
         if(raw_pixels[i] > 4):
@@ -70,15 +71,30 @@ def simplerec(obs, digits, noise):
 def transformgen(digits, noise, htrans, vtrans):
     htrans_values = generate_values_for('htrans_domain', htrans)
     vtrans_values = generate_values_for('vtrans_domain', vtrans)
-    pass
+    random.seed()
+    choice = random.randint(0, 9)
+    warped = {choice: []}
+    for i in range(8):
+        for j in range(8):
+            pos = i * 8 + j
+            v = i + round(vtrans_values[pos] * (5 - j)/4)
+            h = j + round(htrans_values[pos] * (5 - i)/4)
+            try: 
+                new_pos = v * 8 + h
+                warped[choice].append(digits[choice][new_pos])
+            except:
+                warped[choice].append(1)
+    return simplegen(warped, noise, choice)
 
 def main():
     read_digits_from('assignments/asg/code/digits/digits.csv')
     # random.seed()
     noise = [0.0025, 0.0125, 0.0350, 0.9000, 0.0350, 0.0125, 0.0025]
-    obs = simplegen(digits, noise)
-    print(simplerec(obs, digits, noise))
+    # obs = simplegen(digits, noise)
+    htrans = [0.5625, 0.2500, 0.1875]
+    vtrans = [0.2500, 0.5625, 0.1875]
 
+    transformgen(digits, noise, htrans, vtrans)
 
 
 if __name__ == '__main__':
