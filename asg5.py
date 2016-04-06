@@ -26,9 +26,9 @@ def calc_prob_oij(pixel, noise, obs_pixel):
     if (obs_pixel == raw) or \
         (obs_pixel == 1 and raw < 1) or \
         (obs_pixel == 4 and raw > 4):
-        return 1
+        return 1.0
     else:
-        return 0
+        return 0.0
 
 
 def simplegen(digits, noise):
@@ -45,19 +45,23 @@ def simplegen(digits, noise):
 
 def simplerec(obs, digits, noise):
     probs = {}
+    sum_probs = 0
     noise_values = generate_noise(noise)
     for key in digits.keys():
         prob_d = 1/10 # uniform distribution for the keys
-        product = 1
+        product = 1.0
         for position in range(IMAGE_SIZE):
-            prob_nj = 0
+            prob_nj = 0.0
             prob_oij = calc_prob_oij(digits[key][position], 
                 noise_values[position], obs[position])
             for prob_noise in noise:
-                prob_nj += prob_noise*prob_oij
+                prob_nj += (prob_noise * prob_oij)
             product *= prob_nj
         probs[key] = prob_d * product
-    print(probs)
+        sum_probs += probs[key]
+    
+    for i in range(len(probs)):
+        probs[i] = probs[i]/sum_probs
     return probs
 
 def main():
@@ -65,7 +69,7 @@ def main():
     # random.seed()
     noise = [0.0025, 0.0125, 0.0350, 0.9000, 0.0350, 0.0125, 0.0025]
     obs = simplegen(digits, noise)
-    simplerec(obs, digits, noise)
+    print(simplerec(obs, digits, noise))
 
 
 
