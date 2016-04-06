@@ -68,6 +68,9 @@ def simplerec(obs, digits, noise):
         probs[i] = probs[i]/sum_probs
     return probs
 
+def new_index(base, trans_value, difference):
+    return base + round(trans_value * (5 - difference)/4)
+
 def transformgen(digits, noise, htrans, vtrans):
     htrans_values = generate_values_for('htrans_domain', htrans)
     vtrans_values = generate_values_for('vtrans_domain', vtrans)
@@ -77,14 +80,53 @@ def transformgen(digits, noise, htrans, vtrans):
     for i in range(8):
         for j in range(8):
             pos = i * 8 + j
-            v = i + round(vtrans_values[pos] * (5 - j)/4)
-            h = j + round(htrans_values[pos] * (5 - i)/4)
+            v = new_index(i, vtrans_values[pos], j)
+            h = new_index(j, htrans_values[pos], i)
             try: 
                 new_pos = v * 8 + h
                 warped[choice].append(digits[choice][new_pos])
             except:
                 warped[choice].append(1)
     return simplegen(warped, noise, choice)
+
+def transformrec(obs, digits, noise, htrans, vtrans):
+    probs = {}
+    sum_probs = 0
+    noise_values = generate_values_for('noise_domain', noise)
+    htrans_values = generate_values_for('htrans_domain', htrans)
+    vtrans_values = generate_values_for('vtrans_domain', vtrans)
+    for key in digits.keys():
+        sum_h = 0
+        for prob_h in htrans:
+            sum_v = 0
+            for prob_v in vtrans:
+                prod_i = 1
+                for i in range(8):
+                    prod_j = 1
+                    for j in range(8):
+                        sum_nij = 0
+                        for prob_noise in noise:
+                            pos = i * 8 + j
+                            v = new_index(i, vtrans_values[pos], j)
+                            h = new_index(j, htrans_values[pos], i)
+                            new_pos = v * 8 + h
+                            try:
+                                digit_pixel = digits[key][new_pos]
+                            except:
+                                digit_pixel = 1
+                            prob_oij = calc_prob_oij(digit_pixel, 
+                                noise_values[pos], obs[pos])
+                            sum_nij += (prob_noise * prob_oij)
+                        prod_j *= sum_nij
+                    prod_i *= prod_j
+                sum_v += (prod_i * prob_v)
+            sum_h += (sum_v * prob_h)
+        probs[key] = 1/10 * sum_h
+        sum_probs += probs[key]
+
+    for i in range(len(probs)):
+        probs[i] = probs[i]/sum_probs
+    return probs    
 
 def main():
     read_digits_from('assignments/asg/code/digits/digits.csv')
@@ -94,7 +136,8 @@ def main():
     htrans = [0.5625, 0.2500, 0.1875]
     vtrans = [0.2500, 0.5625, 0.1875]
 
-    transformgen(digits, noise, htrans, vtrans)
+    obs = transformgen(digits, noise, htrans, vtrans)
+    print(transformrec(obs, digits, noise, htrans, vtrans))
 
 
 if __name__ == '__main__':
