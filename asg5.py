@@ -35,6 +35,17 @@ def calc_prob_oij(pixel, noise, obs_pixel):
 
 
 def simplegen(digits, noise, choice = -1):
+    """
+    Generate a transformed digit based on the given noise
+
+    Args:
+        digits (dict): The dictionary that contains the possible digits
+            and their signature (digit : [digit_signature]).
+        noise (array): The noise distribution.
+
+    Returns:
+        array: Digit signature from noisy digit.
+    """
     raw_pixels = generate_values_for('noise_domain', noise)
     if choice < 0:
         random.seed()
@@ -48,6 +59,20 @@ def simplegen(digits, noise, choice = -1):
     return raw_pixels
 
 def simplerec(obs, digits, noise):
+    """
+    Calculate the conditional probabilities of an observed digit to be a 
+    digit from 1 to 0. The observed digit is noisy.
+
+    Args:
+        obs (array): The observed digit
+        digits (dict): The dictionary that contains the possible digits
+            and their signature. digit : [digit_signature]
+        noise (array): The distribution of the noise.
+
+    Returns:
+        dict: Dictionary containing the conditional probabilities for 
+            digits from 1 to 0.
+    """
     probs = {}
     sum_probs = 0
     noise_values = generate_values_for('noise_domain', noise)
@@ -72,6 +97,20 @@ def new_index(base, trans_value, difference):
     return base + round(trans_value * (5 - difference)/4)
 
 def transformgen(digits, noise, htrans, vtrans):
+    """
+    Generate a transformed digit based on the given noise and transformation
+    distribution.
+
+    Args:
+        digits (dict): The dictionary that contains the possible digits
+            and their signature (digit : [digit_signature]).
+        noise (array): The noise distribution.
+        htrans (array): The horizontal transformation distribution
+        vtrans (array): The vertical transformation distribution
+
+    Returns:
+        array: Digit signature from transformed digit.
+    """
     htrans_values = generate_values_for('htrans_domain', htrans)
     vtrans_values = generate_values_for('vtrans_domain', vtrans)
     random.seed()
@@ -90,6 +129,22 @@ def transformgen(digits, noise, htrans, vtrans):
     return simplegen(warped, noise, choice)
 
 def transformrec(obs, digits, noise, htrans, vtrans):
+    """
+    Calculate the conditional probabilities of an observed digit to be a 
+    digit from 1 to 0. The observed digit is noisy and transformed.
+
+    Args:
+        obs (array): The observed digit
+        digits (dict): The dictionary that contains the possible digits
+            and their signature. digit : [digit_signature]
+        noise (array): The distribution of the noise.
+        htrans (array): The distribution of the horizontal transformation
+        vtrans (array): The distribution of the vertical transformation
+
+    Returns:
+        dict: Dictionary containing the conditional probabilities for 
+            digits from 1 to 0.
+    """
     probs = {}
     sum_probs = 0
     noise_values = generate_values_for('noise_domain', noise)
@@ -138,6 +193,15 @@ def main():
 
     obs = transformgen(digits, noise, htrans, vtrans)
     print(transformrec(obs, digits, noise, htrans, vtrans))
+
+class Classifier(object):
+    """docstring for Classifier"""
+    def train(data, labels):
+        pass
+
+    def test(data):
+        labels = []
+        return labels        
 
 
 if __name__ == '__main__':
