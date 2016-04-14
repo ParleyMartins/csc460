@@ -227,7 +227,7 @@ class Classifier():
 
 
 
-    def test(sef, data):
+    def test(self, data):
         """
         Receive a matrix with the testing set
 
@@ -246,15 +246,17 @@ class Classifier():
                 total += 1
 
             label = -1
-            max_diff = -1
-            for digit in self.frequency.keys():
+            max_diff = 1000
+            print(frequency)
+            for digit, distribution in self.frequency.items():
                 probability_train = 1
                 probability_test = 1
-                for shade, value in digit.items():
+                for shade, value in distribution.items():
                     probability_train *= (value/self.total)
                     probability_test *= (frequency[shade]/total)
                 diff = abs(probability_train - probability_test)
-                if diff > max_diff:
+                print(probability_train, probability_test)
+                if diff < max_diff:
                     label = digit
                     max_diff = diff
             labels.append(label)
@@ -273,8 +275,21 @@ def main():
         data.append(digit)
         labels.append(label)
     classifier.train(data, labels)
-    print(classifier.frequency)
-    print(classifier.total)
+
+    path = 'assignments/asg/code/digits/digits.csv'
+    global digits
+    digits = {i:[] for i in range(0,10)}
+    read_digits_from(path)
+    test = []
+    for label, digit in digits.items():
+        test.append(digit)
+        labels.append(label)
+    print(digits)
+    print(classifier.test(test))
+
+    
+    # print(classifier.frequency)
+    # print(classifier.total)
     # random.seed()
     # noise = [0.0025, 0.0125, 0.0350, 0.9000, 0.0350, 0.0125, 0.0025]
     # obs = simplegen(digits, noise)
