@@ -229,7 +229,9 @@ class Classifier():
 
     def test(self, data):
         """
-        Receive a matrix with the testing set
+        Receive a matrix with the testing set.
+        I know this is wrong. I tried to use Naive Bayes and couldn't make it work
+        proberly.
 
         Args:
             data (array of arrays): A m*n size matrix with the training data
