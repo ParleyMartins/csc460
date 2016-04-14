@@ -7,13 +7,27 @@ noise_domain = [i for i in range(-3, 4)]
 htrans_domain = [0, 1, 2]
 vtrans_domain = [-1, 0, 1]
 
-def read_digits_from(file_name = 'teste'):
-    line = None
+def read_digits_from(file_name = ''):
+    """
+    Read a csv file and write it to a digits variable. The given csv
+    MUST have the first row as the labels.
+
+    Args:
+        file_name (String): The file to be read (local or full path from this directory).
+    """
     with open(file_name) as digits_file:
         digits_content = csv.DictReader(digits_file)
         for row in digits_content:
             for index, value in row.items():
                 digits[int(index)].append(int(value))
+
+def read_same_digit_from(file_name = '', digit = 0):
+    with open(file_name) as digits_file:
+        digits_content = csv.reader(digits_file)
+        for row in digits_content:
+            for value in row:
+                digits[digit].append(int(value))
+
 
 def generate_values_for(type_of_domain, distribution):
     values = []
@@ -183,26 +197,92 @@ def transformrec(obs, digits, noise, htrans, vtrans):
         probs[i] = probs[i]/sum_probs
     return probs    
 
-def main():
-    read_digits_from('assignments/asg/code/digits/digits.csv')
-    # random.seed()
-    noise = [0.0025, 0.0125, 0.0350, 0.9000, 0.0350, 0.0125, 0.0025]
-    # obs = simplegen(digits, noise)
-    htrans = [0.5625, 0.2500, 0.1875]
-    vtrans = [0.2500, 0.5625, 0.1875]
+class Classifier():
+    """
+    This Classifier uses Naive Bayes to classify the given data
+    """
+    def __init__(self):
+        """
+        Initialize frequency considering 10 digits (0..9) and four shades possible
+        in each pixel (1..4)
+        """
+        self.frequency = {}
+        for digit in range(0, 10):
+            shades = {shade:0 for shade in range(1, 5)}
+            self.frequency[digit] = shades
+        self.total = 0
 
-    obs = transformgen(digits, noise, htrans, vtrans)
-    print(transformrec(obs, digits, noise, htrans, vtrans))
+    def train(self, data, labels):
+        """
+        Train the classifier with the given digits and their labels
 
-class Classifier(object):
-    """docstring for Classifier"""
-    def train(data, labels):
-        pass
+        Args:
+            data (array of arrays): A t*n size matrix with the training data
+            labels (array): A t size array with the labels
+        """
+        for label in range(len(labels)):
+            for pixel in data[label]:
+                self.frequency[label][pixel] += 1
+                self.total += 1
 
-    def test(data):
+
+
+    def test(sef, data):
+        """
+        Receive a matrix with the testing set
+
+        Args:
+            data (array of arrays): A m*n size matrix with the training data
+
+        Returns:
+            array: m size array containing the classification of each given digit
+        """
         labels = []
+        for row in data:
+            frequency = {shade:0 for shade in range(1, 5)}
+            total = 0
+            for pixel in row:
+                frequency[pixel] += 1
+                total += 1
+
+            label = -1
+            max_diff = -1
+            for digit in self.frequency.keys():
+                probability_train = 1
+                probability_test = 1
+                for shade, value in digit.items():
+                    probability_train *= (value/self.total)
+                    probability_test *= (frequency[shade]/total)
+                diff = abs(probability_train - probability_test)
+                if diff > max_diff:
+                    label = digit
+                    max_diff = diff
+            labels.append(label)
         return labels        
 
+
+def main():
+    classifier = Classifier()
+    data = []
+    labels = []
+    path = 'assignments/asg/code/digits/digit.{}.csv'
+    for i in range(10):
+        path2 = path.format(i)
+        read_same_digit_from(path2, i)
+    for label, digit in digits.items():
+        data.append(digit)
+        labels.append(label)
+    classifier.train(data, labels)
+    print(classifier.frequency)
+    print(classifier.total)
+    # random.seed()
+    # noise = [0.0025, 0.0125, 0.0350, 0.9000, 0.0350, 0.0125, 0.0025]
+    # obs = simplegen(digits, noise)
+    # htrans = [0.5625, 0.2500, 0.1875]
+    # vtrans = [0.2500, 0.5625, 0.1875]
+
+    # obs = transformgen(digits, noise, htrans, vtrans)
+    # print(transformrec(obs, digits, noise, htrans, vtrans))
 
 if __name__ == '__main__':
     main()
