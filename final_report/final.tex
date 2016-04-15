@@ -27,11 +27,20 @@ University of Alberta, Augustana Faculty
 %%%%%%%%%%%%
 \section{Game Agent}
 
-The first dumb agent (SimpleCycleAgent) is just a simple cycle made to beat the Rock, Paper, Scissors. It doesn't react to the other agent and always play this cycle.
+The first dumb agent (SimpleCycleAgent) is just a simple cycle made to beat the Rock, Paper, Scissors cycle.
+It doesn't react to the other agent and always play this cycle.
+This agent was made just to see the behavior (of both of the agents) when such a simple one is playing.
 
-The second agent (BiggerCycleAgent) is another dumb cycle, but bigger. It chooses a random cycle size from 1000 to 10000 and randomly populates the cycle. Once it's done, it just iterates through the cycle, without any reaction.
+The second agent (BiggerCycleAgent) is another dumb cycle, but bigger.
+It chooses a random cycle size from 1000 to 10000 and randomly populates the cycle.
+Once it's done, it just iterates through the cycle, without any reaction.
+This was done to improve the challenge of finding a cycle, since this can be really tricky for other agents.
+Depending on the size of the cycle it's not really different from the RandomAgent.
 
-The third agent (StatisticAgent) is ``smarter'', in the sense that it reacts to the other player. It counts the frequency of a movement and plays the action that would beat the most played action by the oponent.
+The third agent (StatisticAgent) is ``smarter'', in the sense that it reacts to the other player.
+It counts the frequency of a movement and plays the action that would beat the most played action by the oponent.
+This was actually the first idea, but I think it would have been more successful against humans, since we are horrible at ramdonness.
+
 % \end{lstlisting}
 
 
