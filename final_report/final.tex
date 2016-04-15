@@ -34,7 +34,7 @@ The first dumb agent (SimpleCycleAgent) is just a simple cycle made to beat the 
 The second agent (BiggerCycleAgent) is another dumb cycle, but bigger. It chooses a random cycle size from 1000 to 10000 and randomly populates the cycle.
 Once it's done, it just iterates through the cycle, without any reaction. This was done to improve the challenge of finding a cycle, since this can be really tricky for other agents. Depending on the size of the cycle it's not really different from the RandomAgent.
 
-The third agent (StatisticAgent) is ``smarter'', in the sense that it reacts to the other player. It counts the frequency of a movement and plays the action that would beat the most played action by the oponent. This was actually the first idea, but I think it would have been more successful against humans, since we are horrible at ramdonness.
+The third agent (StatisticAgent) is ``smarter'', in the sense that it reacts to the other player. It counts the frequency of a movement and plays the action that would beat the most played action by the oponent. This was the first one to be implemented.
 
 % \end{lstlisting}
 
@@ -67,7 +67,7 @@ The three agents had the following results. These values are the mean value of t
 \section{Performance Discussion}
 
 When I first wrote the StatisticAgent, I thought that would be a good policy.
-However, as shown in figure \ref{fig:statistic}, it was a clear disaster against agentslike Scaredy and Counter. Even against the mirror agent it didn't have a very good performance, ending up in tied games most of the times. That happened because of the reaction time of this agent. The only moment it changed its action was when the opponent most played action changed.
+However, as shown in figure \ref{fig:statistic}, it was a clear disaster against agentslike Scaredy and Counter. Even against the MirrorAgent it didn't have a very good performance, ending up in tied games most of the times. That happened because of the reaction time of this agent. The only moment it changed its action was when the opponent most played action changed.
 
 The Statistic showed its flaws especially against the SimpleCycle. With such a simple policy, without even react to the oponnents hand, this agent confused made the Statistic play Paper only when it also played Paper.
 
@@ -82,11 +82,13 @@ The BiggerCycle was an ``improvement'' based on the SimpleCycle. Any agent that 
 
 There are several other approaches to this problem. One of them would be tring to find cycles and play the cycle that beats that. However, as I see, this would be a big problem. First of all you would have to assume a size or count the movements of your opponent. You would also have to store all the action taken and check the next one against all of them everytime. When would the cycle be done? The most important question in this approach is how to be sure that I'm not in a subcyle?
 
-Maybe a better way of doing this would be by statistic (Intuitevaly, but not related to all rounds. Checking against a smaller total (maybe the last five, for example) and checking the most used in this interval seems more effective than what I did for the statistic, because it could have a big response time depending on the opponent's pollicy.
+Maybe a better way of doing this would be by statistic, but not related to all rounds. Checking against a smaller total (maybe the last five, for example) and checking the most used in this interval seems more effective than what I did for the statistic, because it could have a big response time depending on the opponent's pollicy.
 
 %%%%%%%%%%%%
 \section{Conclusion}
 
-It's interesting to see how complex an Artifical Intelegence has to be even for such a small example as playing Rock-Paper-Scissors. This showed how important it is to 
+I was sure that the Statistic agent would have a good performance, and it was a bad surprise when it didn't. Intuitively it was the right choice for me and I still believe it would have been better against a human player instead of a bot. Maybe because a human would be inclined towards one of the choices.
+
+This experiment showed how complex an AI must be, and yet sometimes a simple solution can be better than a very complex one. It was very interesting to see that even a small game can have so many different policies.
 
 \end{document}
