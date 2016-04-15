@@ -80,10 +80,13 @@ The BiggerCycle was an ``improvement'' based on the SimpleCycle. Any agent that 
 %%%%%%%%%%%%
 \section{Other Approaches}
 
-There are several other approaches to this problem. One of them would be tring to find cycles and play the cycle that beats that. However, as I see, this would be a big problem. First of all you would have to assume a number of movements or count (and store) the movements of your opponent. When would the cycle be done? When would I be sure that it 
- to find the opponent policy and change my policy accordingly.
+There are several other approaches to this problem. One of them would be tring to find cycles and play the cycle that beats that. However, as I see, this would be a big problem. First of all you would have to assume a size or count the movements of your opponent. You would also have to store all the action taken and check the next one against all of them everytime. When would the cycle be done? The most important question in this approach is how to be sure that I'm not in a subcyle?
+
+Maybe a better way of doing this would be by statistic (Intuitevaly, but not related to all rounds. Checking against a smaller total (maybe the last five, for example) and checking the most used in this interval seems more effective than what I did for the statistic, because it could have a big response time depending on the opponent's pollicy.
 
 %%%%%%%%%%%%
 \section{Conclusion}
+
+It's interesting to see how complex an Artifical Intelegence has to be even for such a small example as playing Rock-Paper-Scissors. This showed how important it is to 
 
 \end{document}
